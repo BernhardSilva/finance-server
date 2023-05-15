@@ -11,9 +11,6 @@ import { kpis } from './data/data.js';
 
 const app = express();
 
-/* ROUTES */
-
-app.use('/kpi', kpiRoutes);
 
 /* CONFIGURATIONS */
 
@@ -26,7 +23,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
+/* ROUTES */
+
+app.use('/kpi', kpiRoutes);
+
 /* MONGOOSE SETUP */
+
 const PORT = process.env.PORT || 9000;
 mongoose
 	.connect(process.env.MONGO_URL, {
@@ -35,7 +37,7 @@ mongoose
 	})
 	.then(async () => {
 		app.listen(PORT, () => console.log(`Server Port:${PORT}`));
-		//ADD DATA ONE TIME ONLY OR AS NEEDED
+		// ADD DATA ONE TIME ONLY OR AS NEEDED
 		// await mongoose.connection.db.dropDatabase();
 		// KPI.insertMany(kpis);
 	})
