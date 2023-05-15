@@ -1,21 +1,18 @@
 import mongoose from 'mongoose';
-import { loadType } from 'mongoose-currency';
+import { usdToNumber } from '../utils/format.js';
 
 const Schema = mongoose.Schema;
-loadType(mongoose);
 
 const daySchema = new Schema(
 	{
 		date: String,
 		revenue: {
-			type: mongoose.Types.Currency,
-			currency: 'USD',
-			get: (v) => v / 100
+			type: Number,
+			set: usdToNumber
 		},
 		expenses: {
-			type: mongoose.Types.Currency,
-			currency: 'USD',
-			get: (v) => v / 100
+			type: Number,
+			set: usdToNumber
 		}
 	},
 	{
@@ -27,24 +24,20 @@ const montSchema = new Schema(
 	{
 		month: String,
 		revenue: {
-			type: mongoose.Types.Currency,
-			currency: 'USD',
-			get: (v) => v / 100
+			type: Number,
+			set: usdToNumber
 		},
 		expenses: {
-			type: mongoose.Types.Currency,
-			currency: 'USD',
-			get: (v) => v / 100
+			type: Number,
+			set: usdToNumber
 		},
-		operational: {
-			type: mongoose.Types.Currency,
-			currency: 'USD',
-			get: (v) => v / 100
+		operationalExpenses: {
+			type: Number,
+			set: usdToNumber
 		},
 		nonOperationalExpenses: {
-			type: mongoose.Types.Currency,
-			currency: 'USD',
-			get: (v) => v / 100
+			type: Number,
+			set: usdToNumber
 		}
 	},
 	{
@@ -55,26 +48,22 @@ const montSchema = new Schema(
 const KPISchema = new Schema(
 	{
 		totalProfit: {
-			type: mongoose.Types.Currency,
-			currency: 'USD',
-			get: (v) => v / 100
+			type: Number,
+			set: usdToNumber
 		},
 		totalRevenue: {
-			type: mongoose.Types.Currency,
-			currency: 'USD',
-			get: (v) => v / 100
+			type: Number,
+			set: usdToNumber
 		},
 		totalExpenses: {
-			type: mongoose.Types.Currency,
-			currency: 'USD',
-			get: (v) => v / 100
+			type: Number,
+			set: usdToNumber
 		},
 		expensesByCategory: {
 			type: Map,
 			of: {
-				type: mongoose.Types.Currency,
-				currency: 'USD',
-				get: (v) => v / 100
+				type: Number,
+				set: usdToNumber
 			}
 		},
 		dailyData: [daySchema],
@@ -82,7 +71,7 @@ const KPISchema = new Schema(
 	},
 	{
 		timestamps: true,
-		toJSON: { getters: true }
+		toJSON: { setters: true }
 	}
 );
 
