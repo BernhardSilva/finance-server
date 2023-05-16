@@ -44,16 +44,10 @@ mongoose
 		app.listen(PORT, () => console.log(`Server Port:${PORT}`));
 
 		const collections = await mongoose.connection.db.listCollections().toArray();
-
 		const kpisCollectionExists = collections.some((collection) => collection.name === 'kpis');
-		const productsCollectionExists = collections.some(
-			(collection) => collection.name === 'products'
-		);
-		const transactionsCollectionExists = collections.some(
-			(collection) => collection.name === 'transactions'
-		);
+		const productsCollectionExists = collections.some((collection) => collection.name === 'products');
+		const transactionsCollectionExists = collections.some((collection) => collection.name === 'transactions');
 
-		// ADD DATA IF COLLECTIONS ARE EMPTY
 		const productsCount = await Product.countDocuments();
 		const kpisCount = await KPI.countDocuments();
 		const transactionsCount = await Transaction.countDocuments();
@@ -62,6 +56,8 @@ mongoose
 
 		const insertedDataMessage = 'inserted succesfully!';
 
+
+		// Create table and inject dummy data if db.table.name doen't exist or if doesn't contain any data 
 		if (!kpisCollectionExists || kpisCount === 0) {
 			await KPI.insertMany(kpis);
 			insertedData.push('Kpis');
@@ -80,7 +76,7 @@ mongoose
 			console.log(`${insertedData} ${insertedDataMessage}`);
 		}
 
-		// drop database just if is needed (testing purposes only)
+		// Drop database just if is needed (testing purposes only)
 		// await mongoose.connection.db.dropDatabase();
 	})
 	.catch((error) => console.log(`${error}, SERVER ERROR`));
