@@ -1,16 +1,19 @@
-import express from 'express';
 import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import express from 'express';
 import helmet from 'helmet';
+import mongoose from 'mongoose';
 import morgan from 'morgan';
-import kpiRoutes from './routes/kpi.js';
+import { kpis, products, transactions } from './data/data.js';
 import KPI from './models/KPI.js';
-import { kpis } from './data/data.js';
+import Product from './models/Product.js';
+import Transaction from './models/Transaction.js';
+import kpiRoutes from './routes/kpi.js';
+import productRoutes from './routes/product.js';
+import transactionRoutes from './routes/transactions.js';
 
 const app = express();
-
 
 /* CONFIGURATIONS */
 
@@ -26,6 +29,8 @@ app.use(cors());
 /* ROUTES */
 
 app.use('/kpi', kpiRoutes);
+app.use('/product', productRoutes);
+app.use('/transaction', transactionRoutes);
 
 /* MONGOOSE SETUP */
 
@@ -37,10 +42,45 @@ mongoose
 	})
 	.then(async () => {
 		app.listen(PORT, () => console.log(`Server Port:${PORT}`));
-		// ADD DATA ONE TIME ONLY OR AS NEEDED
-		await mongoose.connection.db.dropDatabase();
-		// const kpisWithoutId = kpis.map({_id, ...rest});
-		// console.log("🚀 ~ file: index.js:43 ~ .then ~ kpisWithoutId:", kpisWithoutId)
-		KPI.insertMany(kpis);
+
+		const collections = await mongoose.connection.db.listCollections().toArray();
+
+		const kpisCollectionExists = collections.some((collection) => collection.name === 'kpis');
+		const productsCollectionExists = collections.some(
+			(collection) => collection.name === 'products'
+		);
+		const transactionsCollectionExists = collections.some(
+			(collection) => collection.name === 'transactions'
+		);
+
+		// ADD DATA IF COLLECTIONS ARE EMPTY
+		const productsCount = await Product.countDocuments();
+		const kpisCount = await KPI.countDocuments();
+		const transactionsCount = await Transaction.countDocuments();
+
+		let insertedData = [];
+
+		const insertedDataMessage = 'inserted succesfully!';
+
+		if (!kpisCollectionExists || kpisCount === 0) {
+			await KPI.insertMany(kpis);
+			insertedData.push('Kpis');
+		}
+		if (!productsCollectionExists || productsCount === 0 ) {
+			await Product.insertMany(products);
+			insertedData.push('Products');
+
+		}
+		if (!transactionsCollectionExists || transactionsCount === 0) {
+			await Transaction.insertMany(transactions);
+			insertedData.push('Transactions');
+		}
+
+		if(insertedData.length !== 0) {
+			console.log(`${insertedData} ${insertedDataMessage}`);
+		}
+
+		// drop database just if is needed (testing purposes only)
+		// await mongoose.connection.db.dropDatabase();
 	})
 	.catch((error) => console.log(`${error}, SERVER ERROR`));
