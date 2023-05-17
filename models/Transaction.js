@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
-import { usdToNumber } from '../utils/format.js';
+import { stringToDollar } from '../utils/formatCurrency.js';
 
 const Schema = mongoose.Schema;
 
 const TransactionSchema = new Schema(
 	{
 		buyer: {
-			type: String
+			type: String,
+			required: true
 		},
 		amount: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
 		productIds: [
 			{
@@ -19,10 +20,7 @@ const TransactionSchema = new Schema(
 			}
 		]
 	},
-	{
-		timestamps: true,
-		toJSON: { setters: true }
-	}
+	{ timestamps: true, toJSON: { setters: true } }
 );
 
 const Transaction = mongoose.model('Transaction', TransactionSchema);

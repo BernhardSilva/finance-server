@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { usdToNumber } from '../utils/format.js';
+import { stringToDollar } from '../utils/formatCurrency.js';
 
 const Schema = mongoose.Schema;
 
@@ -8,15 +8,15 @@ const daySchema = new Schema(
 		date: String,
 		revenue: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
 		expenses: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		}
 	},
 	{
-		toJSON: { getters: true }
+		toJSON: { setters: true }
 	}
 );
 
@@ -25,23 +25,23 @@ const montSchema = new Schema(
 		month: String,
 		revenue: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
 		expenses: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
 		operationalExpenses: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
 		nonOperationalExpenses: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		}
 	},
 	{
-		toJSON: { getters: true }
+		toJSON: { setters: true }
 	}
 );
 
@@ -49,21 +49,21 @@ const KPISchema = new Schema(
 	{
 		totalProfit: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
 		totalRevenue: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
 		totalExpenses: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
 		expensesByCategory: {
 			type: Map,
 			of: {
 				type: Number,
-				set: usdToNumber
+				set: stringToDollar
 			}
 		},
 		dailyData: [daySchema],

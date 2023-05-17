@@ -11,7 +11,7 @@ import Product from './models/Product.js';
 import Transaction from './models/Transaction.js';
 import kpiRoutes from './routes/kpi.js';
 import productRoutes from './routes/product.js';
-import transactionRoutes from './routes/transactions.js';
+import transactionRoutes from './routes/transaction.js';
 
 const app = express();
 
@@ -45,8 +45,12 @@ mongoose
 
 		const collections = await mongoose.connection.db.listCollections().toArray();
 		const kpisCollectionExists = collections.some((collection) => collection.name === 'kpis');
-		const productsCollectionExists = collections.some((collection) => collection.name === 'products');
-		const transactionsCollectionExists = collections.some((collection) => collection.name === 'transactions');
+		const productsCollectionExists = collections.some(
+			(collection) => collection.name === 'products'
+		);
+		const transactionsCollectionExists = collections.some(
+			(collection) => collection.name === 'transactions'
+		);
 
 		const productsCount = await Product.countDocuments();
 		const kpisCount = await KPI.countDocuments();
@@ -56,27 +60,36 @@ mongoose
 
 		const insertedDataMessage = 'inserted succesfully!';
 
+		try {
+			let dropDB = false;
+			
+			// Drop database just if is needed (testing purposes only)
+			// dropDB = await mongoose.connection.db.dropDatabase();
 
-		// Create table and inject dummy data if db.table.name doen't exist or if doesn't contain any data 
-		if (!kpisCollectionExists || kpisCount === 0) {
-			await KPI.insertMany(kpis);
-			insertedData.push('Kpis');
-		}
-		if (!productsCollectionExists || productsCount === 0 ) {
-			await Product.insertMany(products);
-			insertedData.push('Products');
+			if (dropDB) {
+				console.log('DB DROPPED!!!');
+			}
 
-		}
-		if (!transactionsCollectionExists || transactionsCount === 0) {
-			await Transaction.insertMany(transactions);
-			insertedData.push('Transactions');
-		}
+			// Create table and inject dummy data if db.table.name doen't exist or if doesn't contain any data
 
-		if(insertedData.length !== 0) {
-			console.log(`${insertedData} ${insertedDataMessage}`);
-		}
+			if (!kpisCollectionExists || kpisCount === 0) {
+				await KPI.insertMany(kpis);
+				insertedData.push('Kpis');
+			}
+			if (!productsCollectionExists || productsCount === 0) {
+				await Product.insertMany(products);
+				insertedData.push('Products');
+			}
+			if (!transactionsCollectionExists || transactionsCount === 0) {
+				await Transaction.insertMany(transactions);
+				insertedData.push('Transactions');
+			}
 
-		// Drop database just if is needed (testing purposes only)
-		// await mongoose.connection.db.dropDatabase();
+			if (insertedData.length !== 0) {
+				console.log(`${insertedData} ${insertedDataMessage}`);
+			}
+		} catch (error) {
+			console.log(error)
+		}
 	})
 	.catch((error) => console.log(`${error}, SERVER ERROR`));

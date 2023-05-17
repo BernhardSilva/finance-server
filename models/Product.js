@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { usdToNumber } from '../utils/format.js';
+import { stringToDollar } from '../utils/formatCurrency.js';
 
 const Schema = mongoose.Schema;
 
@@ -7,18 +7,18 @@ const ProductSchema = new Schema(
 	{
 		price: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
 		expense: {
 			type: Number,
-			set: usdToNumber
+			set: stringToDollar
 		},
-        transactions: [
-            {
-              type: mongoose.Schema.Types.ObjectId,
-              ref: "Transaction",
-            },
-          ],
+		transactions: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Transaction'
+			}
+		]
 	},
 	{
 		timestamps: true,
