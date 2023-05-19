@@ -62,7 +62,7 @@ mongoose
 
 		try {
 			let dropDB = false;
-			
+
 			// Drop database just if is needed (testing purposes only)
 			// dropDB = await mongoose.connection.db.dropDatabase();
 
@@ -89,7 +89,7 @@ mongoose
 				console.log(`${insertedData} ${insertedDataMessage}`);
 			}
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		}
 	})
 	.catch((error) => console.log(`${error}, SERVER ERROR`));
