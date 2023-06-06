@@ -70,7 +70,7 @@ mongoose
 				console.log('DB DROPPED!!!');
 			}
 
-			// Create table and inject dummy data if db.table.name doen't exist or if doesn't contain any data
+			// Create table and inject dummy data if db.table.name doesn't exist or if doesn't has any data
 
 			if (!kpisCollectionExists || kpisCount === 0) {
 				await KPI.insertMany(kpis);
