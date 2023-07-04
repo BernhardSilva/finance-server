@@ -62,6 +62,9 @@ mongoose
 		try {
 			let dropDB = false;
 
+			// Drop database just if is needed (testing purposes only)
+			// dropDB = await mongoose.connection.db.dropDatabase();
+
 			if (dropDB) {
 				console.log('DB DROPPED!!!');
 			}
